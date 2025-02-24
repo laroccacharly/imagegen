@@ -1,0 +1,1 @@
+alias gen="uv run imagegen.py"
