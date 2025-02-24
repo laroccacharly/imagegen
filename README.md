@@ -38,3 +38,16 @@ You can customize the image generation by modifying the parameters in `ImageGenR
 ## Output
 
 Generated images are saved in the `output` directory. File names are automatically generated based on the first few words of the prompt and its length.
+
+## Example
+
+Here's an example of using the image generator:
+
+**Prompt:**
+```
+a nice cute cartoon of a dog with a hat 
+```
+
+**Generated Image:**
+![Example Generated Image](output/a_nice_cute_cartoon_40.png)
+
