@@ -1,1 +1,2 @@
-alias gen="uv run imagegen.py"
+alias run="uv run main.py"
+alias crop="uv run crop.py"
