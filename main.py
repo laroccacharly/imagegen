@@ -4,10 +4,13 @@ from openai import OpenAI
 import base64
 from dotenv import load_dotenv
 import time 
+import uuid
+from compress import compress_image
+from crop import crop_to_16_9
 load_dotenv()
 
 client = OpenAI()
-image_name = "polar"
+image_name = "lns"
 DIRECTORY = Path(image_name) # where the prompt and images are
 OUTPUT_DIR = DIRECTORY / "output"
 OUTPUT_DIR.mkdir(exist_ok=True)
@@ -49,9 +52,21 @@ def main():
         image_base64 = data.b64_json
         image_bytes = base64.b64decode(image_base64)
 
-        with open(OUTPUT_DIR / f"{image_name}_{i}.png", "wb") as f:
-            f.write(image_bytes)
+        # Generate a random UUID for this image
+        image_uuid = str(uuid.uuid4())[:8]
 
+        # Save the original image
+        original_path = OUTPUT_DIR / f"{image_uuid}.png"
+        with open(original_path, "wb") as f:
+            f.write(image_bytes)
+        
+        # Compress the image
+        compressed_path = OUTPUT_DIR / f"{image_uuid}_compressed.png"
+        compress_image(str(original_path), str(compressed_path), target_size_mb=2.0)
+        
+        # Crop the original image to 16:9
+        cropped_path = OUTPUT_DIR / f"{image_uuid}_16_9.png"
+        crop_to_16_9(str(original_path), str(cropped_path))
 
 if __name__ == "__main__":
     main()
