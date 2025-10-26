@@ -45,24 +45,28 @@ def load_images():
     for file in directory.glob("*.png"):
         if not file.name.startswith("_"):
             images.append(open(file, "rb"))
-    if not images:
-        raise ValueError(f"No suitable PNG images found in {directory}. Please add at least one image not starting with '_'")
+
     return images
 
 def main(): 
     prompt = load_prompt()
     images = load_images()
     start_time = time.time()
-    result = client.images.edit( # or client.images.generate
-        model="gpt-image-1",
-        prompt=prompt,
-        image=images,
-        size="1536x1024",
-        # background="opaque", # opaque, transparent, auto
-        n=get_num_images(),
-        # output_format="png",
-        quality="medium", # low, medium, high
-    )
+    params = {
+        "model": "gpt-image-1-mini", # gpt-image-1-mini, gpt-image-1
+        "prompt": prompt,
+        "size": "1536x1024",
+        "n": get_num_images(),
+        "quality": "medium", # low, medium, high
+    }
+    has_images = len(images) > 0
+    if has_images:
+        params["image"] = images
+
+    if has_images:
+        result = client.images.edit(**params)
+    else:
+        result = client.images.generate(**params)
     end_time = time.time()
     delay = floor(end_time - start_time)
     print(f"Time taken: {delay} seconds")
